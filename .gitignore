@@ -1,0 +1,51 @@
+﻿# .gitignore for .NET projects
+
+# Ignore build and output directories
+[Bb]in/
+[Oo]bj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userprefs
+
+# Ignore NuGet packages and restore files
+.nuget/
+packages/
+*.nupkg
+*.nuspec
+
+# Ignore IDE specific files
+.vs/
+.vscode/
+.idea/
+
+# Ignore local development files
+*.swp
+*.swo
+
+# Ignore logs and diagnostics
+logs/
+*.log
+*.csv
+
+# Ignore test results
+TestResults/
+
+# Ignore Azure Functions local settings
+local.settings.json
+
+# Ignore ReSharper files
+_ReSharper.*
+*.ReSharper
+
+# Ignore Rider files
+.idea/
+*.sln.iml
+
+# Ignore macOS files
+.DS_Store
+
+# Ignore Custom files
+out
+Excel2MessagePack/Properties
