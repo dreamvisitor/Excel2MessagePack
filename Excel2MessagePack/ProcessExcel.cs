@@ -215,6 +215,7 @@ namespace Excel2MessagePack
             sb.AppendLine($"// {className}");
             sb.AppendLine($"// {DateTime.Now}");
             sb.AppendLine($"// Created by Excel2MessagePack");
+            sb.AppendLine("// https://github.com/dreamvisitor/Excel2MessagePack");
             sb.AppendLine("// ================================================");
             sb.AppendLine();
             sb.AppendLine();
