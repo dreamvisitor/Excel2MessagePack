@@ -3,16 +3,22 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
-    <PublishSingleFile>true</PublishSingleFile> <!-- 启用单文件发布 -->
-    <SelfContained>true</SelfContained> <!-- 包含运行时（独立发布） -->
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier> <!-- 指定运行时（Windows x64） -->
-    <PublishTrimmed>true</PublishTrimmed> <!-- 裁剪未使用的代码（可选） -->
-    <PublishReadyToRun>true</PublishReadyToRun> <!-- 预编译（可选，提高启动速度） -->
+    <!-- 单文件发布配置 -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- 关闭裁剪和AOT编译 -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <!-- 其他配置 -->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PublishAot>False</PublishAot>
+    <PublishAot>false</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- 确保运行时文件可用 -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +31,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+  </ItemGroup>
+
+  <!-- 确保运行时程序集可用 -->
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization" Value="true" />
+    <Content Include="$(OutputPath)\*.dll" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
