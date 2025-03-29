@@ -246,7 +246,7 @@ namespace Excel2MessagePack
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("// ================================================");
-            sb.AppendLine("// {className}Mgr");
+            sb.AppendLine($"// {className}Mgr");
             sb.AppendLine($"public class {className}Mgr");
             sb.AppendLine("{");
             sb.AppendLine($"    public static Dictionary<{properties[0].Type}, {className}> CfgDict;");
@@ -262,24 +262,42 @@ namespace Excel2MessagePack
 
         static Assembly? DynamicClass(string code)
         {
+            // 获取基础程序集
+            var baseAssemblies = new[]
+            {
+                typeof(object).Assembly,
+                typeof(MessagePackObjectAttribute).Assembly,
+                Assembly.Load("System.Runtime"),
+                Assembly.Load("netstandard")
+            };
+
+            // 创建引用列表
+            var references = baseAssemblies
+                .Where(a => !string.IsNullOrEmpty(a.Location))
+                .Select(a => MetadataReference.CreateFromFile(a.Location))
+                .ToList();
+
+            // 添加其他必要的引用
+            try
+            {
+                var systemRuntime = Assembly.Load("System.Runtime");
+                if (!string.IsNullOrEmpty(systemRuntime.Location))
+                {
+                    references.Add(MetadataReference.CreateFromFile(systemRuntime.Location));
+                }
+            }
+            catch { /* 忽略错误 */ }
+
+
             // 2. 使用 Roslyn 编译代码
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
-
-            // 添加必要的元数据引用
-            var references = new MetadataReference[]
-            {
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(MessagePackObjectAttribute).Assembly.Location),
-                MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "System.Runtime.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "netstandard.dll")),
-            };
 
             // 创建编译选项
             var compilation = CSharpCompilation.Create(
                 "DynamicAssembly",
                 [syntaxTree],
                 references,
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optimizationLevel: OptimizationLevel.Debug));
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             // 编译代码到内存流
             using var ms = new MemoryStream();
