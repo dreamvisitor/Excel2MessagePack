@@ -38,7 +38,7 @@ namespace Excel2MessagePack
             }
 
             // 创建类文件
-            string code = GenerateClassFile(settings.SourceCodeFolder, className, properties);
+            string code = GenerateClassFile(settings.SourceCodeFolder, className, containerType, properties);
 
             // 创建动态类
             Assembly? assembly = DynamicClass(code);
@@ -207,7 +207,7 @@ namespace Excel2MessagePack
             return bytes;
         }
 
-        static string GenerateClassFile(string sourceCodeFolder, string className, List<(string Name, string Type, string description)> properties)
+        static string GenerateClassFile(string sourceCodeFolder, string className, string containerType, List<(string Name, string Type, string description)> properties)
         {
             var sb = new StringBuilder();
             sb.AppendLine("// ================================================");
@@ -249,7 +249,14 @@ namespace Excel2MessagePack
             sb.AppendLine($"// {className}Mgr");
             sb.AppendLine($"public class {className}Mgr");
             sb.AppendLine("{");
-            sb.AppendLine($"    public static Dictionary<{properties[0].Type}, {className}> CfgDict;");
+            if (containerType.Equals("list", StringComparison.InvariantCultureIgnoreCase))
+            {
+                sb.AppendLine($"    public static List<{className}> CfgDict;");
+            }
+            else
+            {
+                sb.AppendLine($"    public static Dictionary<{properties[0].Type}, {className}> CfgDict;");
+            }
             sb.AppendLine("}");
 
 
